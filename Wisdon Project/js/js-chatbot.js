@@ -135,6 +135,8 @@ class WisdonChatbot {
         const input = document.getElementById('chatbot-input');
         const fileBtn = document.getElementById('chatbot-file-btn');
         const fileInput = document.getElementById('chatbot-file-input');
+        const header = document.querySelector('.chatbot-header');
+        const container = document.getElementById('wisdon-chatbot');
 
         if (toggle) toggle.addEventListener('click', () => this.toggleChat());
         if (closeBtn) closeBtn.addEventListener('click', () => this.toggleChat());
@@ -142,6 +144,63 @@ class WisdonChatbot {
         if (input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendMessage(); });
         if (fileBtn) fileBtn.addEventListener('click', () => fileInput.click());
         if (fileInput) fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+
+        // Add drag functionality
+        if (header && container) {
+            this.makeDraggable(container, header);
+        }
+    }
+
+    makeDraggable(element, handle) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+        const dragMouseDown = (e) => {
+            // Don't drag if clicking close button or other buttons
+            if (e.target.closest('.chatbot-close')) return;
+            
+            pos3 = e.clientX || (e.touches && e.touches[0].clientX);
+            pos4 = e.clientY || (e.touches && e.touches[0].clientY);
+            
+            element.classList.add('dragging');
+            
+            const dragMouseMove = (e) => {
+                pos1 = pos3 - (e.clientX || (e.touches && e.touches[0].clientX));
+                pos2 = pos4 - (e.clientY || (e.touches && e.touches[0].clientY));
+                pos3 = e.clientX || (e.touches && e.touches[0].clientX);
+                pos4 = e.clientY || (e.touches && e.touches[0].clientY);
+
+                let newTop = element.offsetTop - pos2;
+                let newLeft = element.offsetLeft - pos1;
+
+                // Keep chatbot within viewport
+                const maxTop = window.innerHeight - element.offsetHeight - 10;
+                const maxLeft = window.innerWidth - element.offsetWidth - 10;
+
+                newTop = Math.max(10, Math.min(newTop, maxTop));
+                newLeft = Math.max(10, Math.min(newLeft, maxLeft));
+
+                element.style.bottom = 'auto';
+                element.style.right = 'auto';
+                element.style.top = newTop + 'px';
+                element.style.left = newLeft + 'px';
+            };
+
+            const dragMouseUp = () => {
+                document.removeEventListener('mousemove', dragMouseMove, false);
+                document.removeEventListener('touchmove', dragMouseMove, false);
+                document.removeEventListener('mouseup', dragMouseUp, false);
+                document.removeEventListener('touchend', dragMouseUp, false);
+                element.classList.remove('dragging');
+            };
+
+            document.addEventListener('mousemove', dragMouseMove, false);
+            document.addEventListener('touchmove', dragMouseMove, false);
+            document.addEventListener('mouseup', dragMouseUp, false);
+            document.addEventListener('touchend', dragMouseUp, false);
+        };
+
+        handle.addEventListener('mousedown', dragMouseDown, false);
+        handle.addEventListener('touchstart', dragMouseDown, false);
     }
 
     toggleChat() {
@@ -153,7 +212,7 @@ class WisdonChatbot {
         toggle.classList.toggle('active');
 
         if (this.isOpen && this.messages.length === 0) {
-            this.addBotMessage("👋 Hello! I'm Wisdon's AI Assistant. How can I help you today?");
+            this.addBotMessage("👋 Hello! I'm Wisdon's Customer Assistant. How can I help you today?");
         }
 
         // If opening chat, mark admin messages as seen

@@ -73,6 +73,12 @@
     opacity: 0;
     transition: all 0.3s ease;
     pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.chatbot-container.dragging {
+    transition: none;
 }
 
 .chatbot-container.active {
@@ -98,6 +104,12 @@
     align-items: center;
     gap: 8px;
     font-size: 16px;
+    cursor: grab;
+}
+
+.chatbot-title:active {
+    cursor: grabbing;
+}
 }
 
 .online-indicator {
@@ -155,8 +167,16 @@
 #chatbot-messages {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 16px;
     background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 200px;
+    word-wrap: break-word;
+    word-break: break-word;
+}
 
 /* Individual Message */
 .chatbot-message {
@@ -284,6 +304,11 @@
     border-top: 1px solid #e0e0e0;
     background: white;
     border-radius: 0 0 12px 12px;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 56px;
+    flex-shrink: 0;
 }
 
 .chatbot-input {
@@ -294,6 +319,8 @@
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
+    min-width: 0;
+    min-height: 40px;
 }
 
 .chatbot-input:focus {
@@ -305,14 +332,18 @@
     color: white;
     border: none;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
     transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
 }
 
 .chatbot-send:hover {
@@ -333,14 +364,18 @@
     color: #666;
     border: 1px solid #ddd;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
     transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
 }
 
 .chatbot-file-btn:hover {
